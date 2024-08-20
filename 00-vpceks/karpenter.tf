@@ -115,7 +115,19 @@ resource "aws_iam_policy" "karpenter" {
       "Effect": "Allow",
       "Action": "sqs:*",
       "Resource": "${aws_sqs_queue.karpenter_interruption_queue.arn}"
+    },
+    {
+        "Effect": "Allow",
+        "Action": [
+            "iam:CreateServiceLinkedRole"
+        ],
+        "Resource": "arn:aws:iam::*:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC2Spot",
+        "Condition": {
+            "StringEquals": {
+            "iam:AWSServiceName": "spot.amazonaws.com"
+            }
     }
+}
 
   ]
 }

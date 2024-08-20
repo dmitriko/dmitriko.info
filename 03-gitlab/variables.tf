@@ -5,3 +5,7 @@ variable "storage_class_name" {
 variable "cluster_name" {
     default = "dmitriko-info"
 }
+
+variable "domain" {
+    default = "dmitriko.info"
+}

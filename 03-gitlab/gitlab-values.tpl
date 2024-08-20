@@ -1,6 +1,10 @@
 certmanager:
   install: false
 
+certmanager-issuer:
+  email: "dummy@foobar.com"
+  create: false
+
 nginx-ingress:
   enabled: false
 
