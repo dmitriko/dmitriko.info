@@ -26,6 +26,9 @@ module "eks" {
       max_size       = 2
       desired_size   = 2
       instance_types = ["t3.medium"]
+      labels = {
+        role = "karpenter"
+      }
       iam_role_additional_policies = {
         AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
         Karpenter                   = aws_iam_policy.karpenter.arn
