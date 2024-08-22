@@ -34,7 +34,6 @@ module "eks" {
         Karpenter                   = aws_iam_policy.karpenter.arn
         VolumeAccess                = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
         LoadBalancer                = "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
-        Route53                     = "arn:aws:iam::aws:policy/AmazonRoute53FullAccess"
       }
     }
   }

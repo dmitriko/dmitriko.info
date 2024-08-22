@@ -25,13 +25,6 @@ global:
       alb.ingress.kubernetes.io/ssl-redirect: "443"
       alb.ingress.kubernetes.io/healthcheck-path: "/login"
 
-gitaly:
-  persistence:
-    storageClass: ${storage_class}
-
-postgresql:
-  persistence:
-    storageClass: ${storage_class}
 
 gitlab-runner:
   runners:

@@ -8,36 +8,12 @@ resource "aws_iam_policy" "karpenter" {
     {
       "Action": [
         "ssm:GetParameter",
-        "ec2:DescribeImages",
-        "ec2:RunInstances",
-        "ec2:DescribeSubnets",
-        "ec2:DescribeSecurityGroups",
-        "ec2:DescribeLaunchTemplates",
-        "ec2:DescribeInstances",
-        "ec2:DescribeInstanceTypes",
-        "ec2:DescribeInstanceTypeOfferings",
-        "ec2:DescribeAvailabilityZones",
-        "ec2:DeleteLaunchTemplate",
-        "ec2:CreateTags",
-        "ec2:CreateLaunchTemplate",
-        "ec2:CreateFleet",
-        "ec2:DescribeSpotPriceHistory",
+        "ec2:*",
         "pricing:GetProducts"
       ],
       "Effect": "Allow",
       "Resource": "*",
       "Sid": "Karpenter"
-    },
-    {
-      "Action": "ec2:TerminateInstances",
-      "Condition": {
-        "StringLike": {
-          "ec2:ResourceTag/karpenter.sh/nodepool": "*"
-        }
-      },
-      "Effect": "Allow",
-      "Resource": "*",
-      "Sid": "ConditionalEC2Termination"
     },
     {
       "Effect": "Allow",

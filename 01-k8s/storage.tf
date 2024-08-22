@@ -9,6 +9,9 @@ resource "helm_release" "ebs_csi_driver" {
 resource "kubernetes_storage_class" "ebs" {
   metadata {
     name = var.storage_class
+    annotations = {
+      "storageclass.kubernetes.io/is-default-class" = "true"
+    }
   }
 
   storage_provisioner = "kubernetes.io/aws-ebs"

@@ -39,8 +39,8 @@ resource "aws_iam_policy" "external_dns_policy" {
         ]
       },
       {
-        Effect = "Allow"
-        Action = "route53:GetChange"
+        Effect   = "Allow"
+        Action   = "route53:GetChange"
         Resource = "arn:aws:route53:::change/*"
       }
     ]
@@ -77,7 +77,7 @@ resource "helm_release" "external_dns" {
     name  = "serviceAccount.create"
     value = "false"
   }
-  
+
   set {
     name  = "aws.zoneType"
     value = "public"
