@@ -20,6 +20,7 @@ module "eks" {
     "karpenter.sh/discovery" = var.tag
   }
 
+
   eks_managed_node_groups = {
     karpenter-30 = {
       min_size       = 2
@@ -35,6 +36,6 @@ module "eks" {
         VolumeAccess                = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
         LoadBalancer                = "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
       }
-    }
-  }
+   } 
+}
 }

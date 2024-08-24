@@ -174,10 +174,10 @@ resource "kubernetes_stateful_set_v1" "webide" {
 
           resources {
             requests = {
-              memory = "500Mi"
+              memory = "5Gi"
             }
             limits = {
-              memory = "1Gi"
+              memory = "10Gi"
             }
           }
           env {
