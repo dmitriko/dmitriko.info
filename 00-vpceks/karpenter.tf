@@ -93,6 +93,16 @@ resource "aws_iam_policy" "karpenter" {
       "Resource": "${aws_sqs_queue.karpenter_interruption_queue.arn}"
     },
     {
+      "Sid": "webshield",
+      "Effect": "Allow",
+      "Action": [ 
+        "wafv2:*",
+        "shield:*",
+        "waf-regional:*"
+      ],
+      "Resource": "*"
+    },
+    {
         "Effect": "Allow",
         "Action": [
             "iam:CreateServiceLinkedRole"

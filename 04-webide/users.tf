@@ -150,3 +150,19 @@ resource "kubernetes_role_binding_v1" "access_own_ns" {
   }
 }
 
+resource "kubernetes_config_map_v1_data" "aws_auth" {
+  metadata {
+    name      = "aws-auth"
+    namespace = "kube-system"
+  }
+
+  data = {
+    mapUsers = templatefile("${path.module}/map-users.tpl",
+      {
+        "users"      = local.user_names,
+        "admins"     = var.admins,
+        "account_id" = data.aws_caller_identity.current.account_id
+    })
+  }
+  force = true
+}

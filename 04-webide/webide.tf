@@ -55,8 +55,6 @@ resource "kubernetes_ingress_v1" "webide" {
       "alb.ingress.kubernetes.io/group.name"       = "${var.subdomain}-${var.domain}"
       "alb.ingress.kubernetes.io/ssl-redirect"     = "443"
       "alb.ingress.kubernetes.io/healthcheck-path" = "/login"
-      "external-dns.alpha.kubernetes.io/hostname"  = "${each.key}.${var.subdomain}.${var.domain}"
-      "external-dns.alpha.kubernetes.io/ttl"       = "300"
     }
   }
 

@@ -1,24 +1,33 @@
 
+locals {
+    sa_name = "external-dns" // k8s service account named
+    sa_ns   = "kube-system" // namespace where the service account is
+}
+
 resource "aws_iam_role" "external_dns_role" {
   name = "external-dns-role-${var.cluster_name}"
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRoleWithWebIdentity"
-        Effect = "Allow"
-        Principal = {
-          Federated = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${data.aws_eks_cluster.cluster.identity.0.oidc.0.issuer}"
-        }
-        Condition = {
-          StringEquals = {
-            "${data.aws_eks_cluster.cluster.identity.0.oidc.0.issuer}:sub" = "system:serviceaccount:kube-system:external-dns"
-          }
-        }
-      }
-    ]
-  })
+  assume_role_policy = data.aws_iam_policy_document.external_dns_assume_role_policy.json
+}
+
+data "aws_iam_openid_connect_provider" "eks_openid_connect_provider" {
+  url = data.aws_eks_cluster.cluster.identity.0.oidc.0.issuer
+}
+
+data "aws_iam_policy_document" "external_dns_assume_role_policy" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    effect  = "Allow"
+    principals {
+      type        = "Federated"
+      identifiers = [data.aws_iam_openid_connect_provider.eks_openid_connect_provider.arn]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "${data.aws_iam_openid_connect_provider.eks_openid_connect_provider.url}:sub"
+      values   = ["system:serviceaccount:${local.sa_ns}:${local.sa_name}"]
+    }
+  }
 }
 
 resource "aws_iam_policy" "external_dns_policy" {
@@ -34,9 +43,7 @@ resource "aws_iam_policy" "external_dns_policy" {
           "route53:ListHostedZones",
           "route53:ListResourceRecordSets"
         ]
-        Resource = [
-          "arn:aws:route53:::hostedzone/YOUR_HOSTED_ZONE_ID"
-        ]
+        Resource = "*"
       },
       {
         Effect   = "Allow"
@@ -54,8 +61,8 @@ resource "aws_iam_role_policy_attachment" "external_dns_role_attachment" {
 
 resource "kubernetes_service_account" "external_dns_sa" {
   metadata {
-    name      = "external-dns"
-    namespace = "kube-system"
+    name      = local.sa_name
+    namespace = local.sa_ns
     annotations = {
       "eks.amazonaws.com/role-arn" = aws_iam_role.external_dns_role.arn
     }
@@ -71,6 +78,11 @@ resource "helm_release" "external_dns" {
   set {
     name  = "provider"
     value = "aws"
+  }
+
+  set {
+    name  = "sources[0]"
+    value = "ingress"
   }
 
   set {
@@ -95,7 +107,7 @@ resource "helm_release" "external_dns" {
 
   set {
     name  = "policy"
-    value = "upsert-only"
+    value = "sync"
   }
 
   set {
