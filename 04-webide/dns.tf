@@ -8,7 +8,7 @@ resource "aws_route53_zone" "this" {
 
 resource "aws_route53_record" "parent" {
   zone_id = data.aws_route53_zone.parent.zone_id
-  name    = var.tag
+  name    = aws_route53_zone.this.name
   type    = "NS"
   ttl     = "300"
   records = aws_route53_zone.this.name_servers
