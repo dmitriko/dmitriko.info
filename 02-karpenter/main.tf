@@ -186,6 +186,11 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
     namespace = "kube-system"
   }
   force = true
+
+  lifecycle {
+    prevent_destroy = true
+  }
+  
   data = {
     "mapRoles" = yamlencode(
       [
